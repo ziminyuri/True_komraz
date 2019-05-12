@@ -4,4 +4,41 @@
 
 {% block content %}
 
-{% endblock %}
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'show_appeals_add'  %}">Скачать форму</a>
+    <div><br></div>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>Номер</th>
+                <th>Дата заключения</th>
+                <th>Дата окончания</th>
+                <th>Дефект</th>
+                <th>Внешний вид</th>
+                <th>Устройство</th>
+                <th>Клиент</th>
+                <th>Услуга</th>
+                <th>Скачать</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.ID_Order }}</td>
+                     <td>{{ order.Id_contract.ConclusionDate}}</td>
+                    <td>{{ order.Id_contract.PeriodExecute}}</td>
+                    <td>{{ order.Id_contract.Defect }}</td>
+                    <td>{{ order.Id_contract.Appearance }}</td>
+                    <td>{{ order.Id_contract.Id_device.Model_device }}</td>
+                    <td>{{ order.Id_contract.Id_customer.FIO}}</td>
+                    <td>{{ order.Id_contract.ID_service.Id_service.Name_work }}</td>
+                    <td><a class="btn btn-outline-secondary btn-sm" href="{% url 'show_appeals_update' id=order.ID_Order  %}">Скачать</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}}

@@ -1,0 +1,22 @@
+<!-- Обращения -->
+
+{% extends "top_komraz/base.html" %}
+
+{% block content %}
+    <row>
+
+        <form action="{% url 'show_parts_stock'  %}" method="POST">
+            <div class="form-group">
+                <input type="hidden" required class="form-control" name="_method" id="_method" value = "PUT">
+                <input type="hidden" required class="form-control" name="detail" id="detail" value = "{{ detail.Id_Detail }}">
+                <label>Наименование</label>
+                <input type="text" disabled class="form-control" name="NameDetail" id="NameDetail" value = "{{ detail.NameDetail }}">
+                <label>Кол-во</label>
+                <input type="text" required class="form-control" name="id_number" id="id_number" value = "{{ detail.Number }}">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" type="sbumit">Обновить</button>
+            </div>
+        </form>
+
+{% endblock %}

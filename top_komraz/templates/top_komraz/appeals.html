@@ -1,7 +1,61 @@
 <!-- Обращения -->
 
- {% extends "top_komraz/base.html" %}
+{% extends "top_komraz/base.html" %}
 
 {% block content %}
+
+
+
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'show_appeals_add'  %}">Добавить</a>
+    <div><br></div>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>Номер</th>
+                <th>Устройство</th>
+                <th>Ремонт</th>
+                <th>Дата окончания</th>
+                <th>Мастер</th>
+                <th>Статус</th>
+                <th>Редактировать</th>
+                <th>Удалить</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.ID_Order }}</td>
+                    <td>{{ order.Id_contract.Id_device.Model_device }}</td>
+                    <td>{{ order.Id_contract.ID_service.Id_service.Name_work }}</td>
+                    <td>{{ order.Id_contract.ConclusionDate}}</td>
+                    <td>{{ order.Id_Master.FIO}}</td>
+                    <td>{{ order.Id_Status.NameStatus}}</td>
+                    <td><a class="btn btn-outline-secondary btn-sm" href="{% url 'show_appeals_update' id=order.ID_Order  %}">Редактировать</a></td>
+                    <td>
+                        <form action="{% url 'show_appeals' %}" method="POST">
+                            <input type="hidden" required class="form-control" name="_method" id="_method" value = "DELETE">
+                            <input type="hidden" required class="form-control" name="device" id="device" value = "{{ order.Id_contract.Id_device.Id_device }}">
+                            <input type="hidden" required class="form-control" name="contract" id="contract" value = "{{ order.Id_contract.Id_contract }}">
+                            <input type="hidden" required class="form-control" name="order" id="order" value = "{{ order.ID_Order }}">
+                            <input type="submit" class="btn btn-outline-danger btn-sm" value="Удалить" >
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+
+    </div>
+
+
+
+
+
 
 {% endblock %}

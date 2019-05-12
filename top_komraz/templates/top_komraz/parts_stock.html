@@ -1,7 +1,33 @@
-<!-- Запчасти в наличии -->
+<!-- Обращения -->
 
- {% extends "top_komraz/base.html" %}
+{% extends "top_komraz/base.html" %}
 
 {% block content %}
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Кол-во</th>
+                <th>Цена оптовая</th>
+                <th>Цена розничная</th>
+                <th>Вид</th>
+                <th>Редактировать</th>
 
+            </tr>
+            </thead>
+            <tbody>
+            {% for detail in details %}
+                <tr>
+                    <td>{{ detail.NameDetail }}</td>
+                    <td>{{ detail.Number }}</td>
+                    <td>{{ detail.PriceDetail }}</td>
+                    <td>{{ detail.Market_price }}</td>
+                    <td>{{ detail.Id_KindDetail.Name_Detail }}</td>
+                    <td><a class="btn btn-outline-secondary btn-sm" href="{% url 'show_parts_stock_update' id=detail.Id_Detail  %}">Редактировать</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

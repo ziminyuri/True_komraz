@@ -3,5 +3,27 @@
  {% extends "top_komraz/base.html" %}
 
 {% block content %}
-
+<div class="table-responsive">
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th>Номер акта</th>
+                  <th>ФИО мастера</th>
+                    <th>Номер заказа</th>
+                    <th>Устройство</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for completion in completions %}
+                <tr>
+                  <td>{{ completion.ID_certificate }}</td>
+                  <td>{{ completion.ID_Order.Id_Master.FIO }}</td>
+                 <td>{{ completion.ID_Order.ID_Order}}</td>
+                 <td>{{ completion.ID_Order.Id_contract.Id_device.Model_device}}</td>
+                <td>{{ completion.ID_Order.Id_contract. }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
 {% endblock %}
