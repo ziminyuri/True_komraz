@@ -18,6 +18,8 @@ urlpatterns = [
     path('sales', views.show_sales, name='show_sales'),
     path('procurement', views.show_procurement, name='show_procurement'),
     path('acceptance_certificate', views.show_acceptance_certificate, name='show_acceptance_certificate'),
+    path('download_act_enter', views.download_act_enter, name='download_act_enter'),
+    path('download_act', views.download_act, name='download_act'),
     path('contract_supply', views.show_contract_supply, name='show_contract_supply'),
     path('certificate_of_completion', views.show_certificate_of_completion, name='show_certificate_of_completion'),
 ]

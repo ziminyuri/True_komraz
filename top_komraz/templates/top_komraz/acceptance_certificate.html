@@ -4,7 +4,11 @@
 
 {% block content %}
 
-    <a class="btn btn-outline-secondary btn-sm" href="{% url 'show_appeals_add'  %}">Скачать форму</a>
+
+    <form action="{% url 'download_act'  %}">
+        <input type="submit" class="btn btn-outline-secondary btn-sm" value="Скачать форму">
+      </form>
+
     <div><br></div>
 
     <div class="table-responsive">

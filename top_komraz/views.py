@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from django.views.decorators.csrf import csrf_exempt
+from docx import Document
+from django.http import HttpResponse
+import os
 
 # Create your views here.
 def index(request):
@@ -38,6 +41,32 @@ def show_kind_creator(request):
 def show_acceptance_certificate(request):
     orders = Orderentity_fix2.objects.all()
     return render(request, 'top_komraz/acceptance_certificate.html',{'orders': orders})
+
+#Заполненный акт приема
+@csrf_exempt
+def download_act_enter(request):
+    document = Document('top_komraz/act_enter_template.docx')
+    document.save('top_komraz/act_enter_downloads.docx')
+    filename = 'top_komraz/act_enter_downloads.docx'
+    data = open(filename, "rb").read()
+    response = HttpResponse(data, content_type='application/docx')
+    response['Content-Length'] = os.path.getsize(filename)
+    response['Content-Disposition'] = 'attachment; filename=.docx'
+
+    return response
+
+#Форма акта приема
+@csrf_exempt
+def download_act(request):
+    document = Document('top_komraz/act_enter.docx')
+    document.save('top_komraz/act_downloads.docx')
+    filename = 'top_komraz/act_downloads.docx'
+    data = open(filename, "rb").read()
+    response = HttpResponse(data, content_type='application/docx')
+    response['Content-Length'] = os.path.getsize(filename)
+    response['Content-Disposition'] = 'attachment; filename=act_downloads.docx'
+
+    return response
 
 #Договор на поставку
 def show_contract_supply(request):
