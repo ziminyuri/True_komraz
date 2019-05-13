@@ -339,25 +339,84 @@ def show_parts_stock(request):
     if request.method == 'POST':
         re_data = request.POST
 
+        # Добавление
+        if re_data['_method'] == "POST":
+            detail = get_object_or_404(KindDetail, Id_KindDetail=re_data['id_kind'])
+            Detail_fix2.objects.create(NameDetail = re_data['id_name'], PriceDetail = re_data['id_price'],
+                                       Market_price = re_data['id_market'],Number = re_data['id_quantity'],
+                                       Id_KindDetail = detail )
+            return redirect('show_parts_stock')
+
         #Редактирование
         if re_data['_method'] == "PUT":
             Detail_fix2.objects.filter(Id_Detail =re_data['detail']).update(Number=re_data['id_number'])
+            return redirect('show_parts_stock')
 
     return render(request, 'top_komraz/parts_stock.html',{'details': details})
+
+#Запчасти в наличии: Добавиление
+def show_parts_stock_add(request):
+    details = Detail_fix2.objects.all()
+    kind = KindDetail.objects.all()
+    return render(request, 'top_komraz/parts_stock_add.html',{ 'details': details, 'kinds' : kind})
 
 #Запчасти в наличии: Редактирование количества
 def show_parts_stock_update(request,id):
     detail = get_object_or_404(Detail_fix2,  Id_Detail =id)
     return render(request, 'top_komraz/parts_stock_update.html',{'detail': detail})
 
+
 #Запчасти реализованные
+@csrf_exempt
 def show_parts_sold(request):
     details = Implemented.objects.all()
+    if request.method == 'POST':
+        re_data = request.POST
+
+        # Добавление
+        if re_data['_method'] == "POST":
+            detail = get_object_or_404(Detail_fix2, Id_Detail=re_data['id_detail'])
+            Implemented.objects.create(ID_Detail=detail, Quantity=re_data['id_quantity'])
+            return redirect('show_parts_sold')
+
+        # Редактирование
+        if re_data['_method'] == "PUT":
+            Implemented.objects.filter(ID_certificate=re_data['detail']).update(Quantity=re_data['id_number'])
+            return redirect('show_parts_sold')
+
+        # Удаление
+        if re_data['_method'] == "DELETE":
+            data = Implemented.objects.get(ID_certificate=re_data['device'])
+            data.delete()
+
+            return redirect('show_parts_sold')
     return render(request, 'top_komraz/parts_sold.html',{'details': details})
 
+#Запчасти реализованные: Добавиление
+def show_parts_sold_add(request):
+    details = Implemented.objects.all()
+    return render(request, 'top_komraz/parts_sold_add.html',{ 'details': details})
+
+#Запчасти реализованные: Редактирование количества
+def show_parts_sold_update(request,id):
+    detail = get_object_or_404(Implemented,  ID_certificate =id)
+    return render(request, 'top_komraz/parts_sold_update.html',{'detail': detail})
+
 #Платежи
+@csrf_exempt
 def show_payments(request):
-    return render(request, 'top_komraz/Payments.html')
+    orders = Orderentity_fix2.objects.all()
+    if request.method == 'POST':
+        re_data = request.POST
+
+        # Редактирование
+        if re_data['_method'] == "PUT":
+            status = get_object_or_404(Status, NameStatus="В очереди")
+            print(status)
+            Orderentity_fix2.objects.filter(ID_Order=re_data['order']).update(Id_Status=status)
+            return redirect('show_payments')
+
+    return render(request, 'top_komraz/Payments.html',{'orders': orders})
 
 ##################################################
 ############### ПЛАНЫ ############################

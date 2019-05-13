@@ -3,6 +3,8 @@
  {% extends "top_komraz/base.html" %}
 
 {% block content %}
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'show_parts_sold_add'  %}">Добавить</a>
+    <div><br></div>
 
 <div class="table-responsive">
         <table class="table table-striped table-sm">
@@ -24,7 +26,14 @@
                     <td>{{ detail.Quantity }}</td>
                     <td>{{ detail.ID_Detail.PriceDetail }}</td>
                     <td>{{ detail.ID_Detail.Market_price }}</td>
-                    <td><a class="btn btn-outline-secondary btn-sm" href="">Редактировать</a></td>
+                    <td><a class="btn btn-outline-secondary btn-sm" href="{% url 'show_parts_sold_update'  id=detail.ID_certificate%}">Редактировать</a></td>
+                    <td>
+                        <form action="{% url 'show_parts_sold' %}" method="POST">
+                            <input type="hidden" required class="form-control" name="_method" id="_method" value = "DELETE">
+                            <input type="hidden" required class="form-control" name="device" id="device" value = "{{ detail.ID_certificate }}">
+                            <input type="submit" class="btn btn-outline-danger btn-sm" value="Удалить" >
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>

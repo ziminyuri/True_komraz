@@ -1,0 +1,24 @@
+{% extends "top_komraz/base.html" %}
+
+{% block content %}
+    <row>
+        <form action="{% url 'show_parts_sold'  %}" method="POST">
+            <div class="form-group">
+                <input type="hidden" required class="form-control" name="_method" id="_method" value = "POST">
+                <label>Наименование</label>
+                <select id="RequestType" class="form-control" name="id_detail" id="id_detail">
+                    {% for detail in details %}
+                        <option selected value= "{{ detail.ID_Detail.Id_Detail }}">
+                            {{ detail.ID_Detail.NameDetail }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label>Количество</label>
+                <input type="text" required class="form-control" name="id_quantity" id="id_quantity">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" type="sbumit">Добавить</button>
+            </div>
+        </form>
+{% endblock %}

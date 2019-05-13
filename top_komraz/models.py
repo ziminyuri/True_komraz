@@ -186,3 +186,30 @@ class Implemented(models.Model):
 
     class Meta:
         db_table = 'implemented'
+
+#План закупок
+class Plan(models.Model):
+    id_plan_delivery= models.AutoField(primary_key=True)
+    Quantity = models.IntegerField()
+    ID_Detail = models.ForeignKey(Detail_fix2, models.DO_NOTHING)
+
+    class Meta:
+        db_table = 'plan'
+
+#Период
+class Period(models.Model):
+    id_period= models.AutoField(primary_key=True)
+    Name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = 'period'
+
+#План продаж
+class Procurement_plan(models.Model):
+    id_plan= models.AutoField(primary_key=True)
+    Quantity = models.IntegerField()
+    Id_Employee = models.ForeignKey(Employee, models.DO_NOTHING)
+    id_period = models.ForeignKey(Period, models.DO_NOTHING)
+
+    class Meta:
+        db_table = 'procurement_plan'

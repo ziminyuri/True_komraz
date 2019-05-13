@@ -1,0 +1,34 @@
+{% extends "top_komraz/base.html" %}
+
+{% block content %}
+    <row>
+        <form action="{% url 'show_parts_stock'  %}" method="POST">
+            <div class="form-group">
+                <input type="hidden" required class="form-control" name="_method" id="_method" value = "POST">
+                <label>Наименование</label>
+                <select id="RequestType" class="form-control" name="id_kind" id="id_kind">
+                    {% for kind in kinds %}
+                        <option selected value= "{{ kind.Id_KindDetail }}">
+                            {{ kind.Cifer_kind }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label>Наименование</label>
+                <input type="text" required class="form-control" name="id_name" id="id_name">
+
+                <label>Количество</label>
+                <input type="text" required class="form-control" name="id_quantity" id="id_quantity">
+
+                <label>Розничная цена</label>
+                <input type="text" required class="form-control" name="id_price" id="id_price">
+
+                <label>Оптовая цена</label>
+                <input type="text" required class="form-control" name="id_market" id="id_market">
+
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" type="sbumit">Добавить</button>
+            </div>
+        </form>
+{% endblock %}
