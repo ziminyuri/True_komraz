@@ -108,9 +108,6 @@ def download_supply(request):
     document = Document('top_komraz/supply_template.docx')
     re_data = request.POST
     date1 = re_data['date']
-    year = date1[:4]
-    month = date1[5:7]
-    day = date1[8:10]
     number_act = re_data['number_act']
     provider = re_data['provider']
     detail = re_data['detail']
@@ -355,7 +352,8 @@ def show_parts_stock_update(request,id):
 
 #Запчасти реализованные
 def show_parts_sold(request):
-    return render(request, 'top_komraz/parts_sold.html')
+    details = Implemented.objects.all()
+    return render(request, 'top_komraz/parts_sold.html',{'details': details})
 
 #Платежи
 def show_payments(request):

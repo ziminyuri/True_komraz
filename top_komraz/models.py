@@ -181,8 +181,8 @@ class Certificate_fix2(models.Model):
 #Реализованные запчасти
 class Implemented(models.Model):
     ID_certificate= models.AutoField(primary_key=True)
-    Date = models.DateField()
-    ID_Order_fix = models.ForeignKey(Orderentity_fix2, models.DO_NOTHING)
+    Quantity = models.IntegerField()
+    ID_Detail = models.ForeignKey(Detail_fix2, models.DO_NOTHING)
 
     class Meta:
         db_table = 'implemented'

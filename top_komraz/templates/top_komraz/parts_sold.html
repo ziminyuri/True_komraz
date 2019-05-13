@@ -4,4 +4,30 @@
 
 {% block content %}
 
+<div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Кол-во</th>
+                <th>Цена оптовая</th>
+                <th>Цена розничная</th>
+                <th>Редактировать</th>
+                <th>Удалить</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for detail in details %}
+                <tr>
+                    <td>{{ detail.ID_Detail.NameDetail }}</td>
+                    <td>{{ detail.Quantity }}</td>
+                    <td>{{ detail.ID_Detail.PriceDetail }}</td>
+                    <td>{{ detail.ID_Detail.Market_price }}</td>
+                    <td><a class="btn btn-outline-secondary btn-sm" href="">Редактировать</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
