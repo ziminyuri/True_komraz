@@ -4,6 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 from docx import Document
 from django.http import HttpResponse
 import os
+import re
+from decimal import Decimal
 
 # Create your views here.
 def index(request):
@@ -46,12 +48,38 @@ def show_acceptance_certificate(request):
 @csrf_exempt
 def download_act_enter(request):
     document = Document('top_komraz/act_enter_template.docx')
+    re_data = request.POST
+    number_act = re_data['number_act']
+    fio = re_data['fio']
+    address = re_data['address']
+    phone = re_data['phone']
+    model = re_data['model']
+    imei = re_data['imei']
+    appearance = re_data['appearance']
+    name_work = re_data['name_work']
+    defect = re_data['defect']
+    employee = re_data['employee']
+    date = re_data['date']
+
+    for p in document.paragraphs:
+        p.text = re.sub(r'НОМЕР', number_act, p.text)
+        p.text = re.sub(r'КЛИЕНТ', fio, p.text)
+        p.text = re.sub(r'АДРЕС', address, p.text)
+        p.text = re.sub(r'ТЕЛЕФОН', phone, p.text)
+        p.text = re.sub(r'НАИМЕНОВАНИЕ', model, p.text)
+        p.text = re.sub(r'МОДЕЛЬ', imei, p.text)
+        p.text = re.sub(r'ОПИСАНИЕ', appearance, p.text)
+        p.text = re.sub(r'ВИД РЕМОНТА', name_work, p.text)
+        p.text = re.sub(r'ДЕФЕКТ', defect, p.text)
+        p.text = re.sub(r'СОТРУДНИК', employee, p.text)
+        p.text = re.sub(r'ДАТА', date, p.text)
+
     document.save('top_komraz/act_enter_downloads.docx')
     filename = 'top_komraz/act_enter_downloads.docx'
     data = open(filename, "rb").read()
     response = HttpResponse(data, content_type='application/docx')
     response['Content-Length'] = os.path.getsize(filename)
-    response['Content-Disposition'] = 'attachment; filename=.docx'
+    response['Content-Disposition'] = 'attachment; filename=act_enter_downloads.docx'
 
     return response
 
@@ -70,12 +98,121 @@ def download_act(request):
 
 #Договор на поставку
 def show_contract_supply(request):
-    return render(request, 'top_komraz/contract_supply.html')
+    deliverys = Request_delivery3.objects.all()
+    return render(request, 'top_komraz/contract_supply.html',{'deliverys': deliverys})
+
+
+#Заполненный договор на поставку
+@csrf_exempt
+def download_supply(request):
+    document = Document('top_komraz/supply_template.docx')
+    re_data = request.POST
+    date1 = re_data['date']
+    year = date1[:4]
+    month = date1[5:7]
+    day = date1[8:10]
+    number_act = re_data['number_act']
+    provider = re_data['provider']
+    detail = re_data['detail']
+    quantity = re_data['quantity']
+    price = re_data['price']
+    address = re_data['address']
+    phone = re_data['phone']
+    employee = re_data['employee']
+
+    price1 = price.split(',')
+    end_price = int(price1[0]) * int(quantity)
+    price1 = str(end_price)
+
+    for p in document.paragraphs:
+        p.text = re.sub(r'НОМЕР', number_act, p.text)
+        p.text = re.sub(r'ДАТА', date1, p.text)
+        p.text = re.sub(r'ПОСТАВЩИК', provider, p.text)
+        p.text = re.sub(r'ЧАСТИ', detail, p.text)
+        p.text = re.sub(r'КОЛИЧЕСТВО', quantity, p.text)
+        p.text = re.sub(r'ЦЕНА', price, p.text)
+        p.text = re.sub(r'СТОИМОСТЬ', price1, p.text)
+        p.text = re.sub(r'АДРЕСОК', address, p.text)
+        p.text = re.sub(r'ТЕЛЕФОН', phone, p.text)
+        p.text = re.sub(r'СОТРУДНИК', employee, p.text)
+
+    document.save('top_komraz/download_supply.docx')
+    filename = 'top_komraz/download_supply.docx'
+    data = open(filename, "rb").read()
+    response = HttpResponse(data, content_type='application/docx')
+    response['Content-Length'] = os.path.getsize(filename)
+    response['Content-Disposition'] = 'attachment; filename=download_supply.docx'
+
+    return response
+
+#Форма договора на поставку
+@csrf_exempt
+def download_supply_form(request):
+    document = Document('top_komraz/supply.docx')
+    document.save('top_komraz/downloads_supply_form.docx')
+    filename = 'top_komraz/downloads_supply_form.docx'
+    data = open(filename, "rb").read()
+    response = HttpResponse(data, content_type='application/docx')
+    response['Content-Length'] = os.path.getsize(filename)
+    response['Content-Disposition'] = 'attachment; filename=downloads_supply_form.docx'
+
+    return response
 
 #Акт выполненных работ
 def show_certificate_of_completion(request):
+    certificate = Certificate_fix2.objects.all()
+    return render(request, 'top_komraz/certificate_of_completion.html',{'certificates': certificate})
 
-    return render(request, 'top_komraz/certificate_of_completion.html')
+#Заполненный акт выполненных работ
+@csrf_exempt
+def download_act_end_template(request):
+    document = Document('top_komraz/act_end_template.docx')
+    re_data = request.POST
+
+    number_act = re_data['number_act']
+    fio = re_data['fio']
+    address = re_data['address']
+    phone = re_data['phone']
+    model = re_data['model']
+    imei = re_data['imei']
+    name_work = re_data['name_work']
+    defect = re_data['defect']
+    employee = re_data['employee']
+    date = re_data['date']
+
+    for p in document.paragraphs:
+        p.text = re.sub(r'НОМЕР', number_act, p.text)
+        p.text = re.sub(r'СОТРУДНИК', employee, p.text)
+        p.text = re.sub(r'ДАТА', date, p.text)
+        p.text = re.sub(r'КЛИЕНТ', fio, p.text)
+        p.text = re.sub(r'АДРЕС', address, p.text)
+        p.text = re.sub(r'ТЕЛЕФОН', phone, p.text)
+        p.text = re.sub(r'НАИМЕНОВАНИЕ', model, p.text)
+        p.text = re.sub(r'МОДЕЛЬ', imei, p.text)
+        p.text = re.sub(r'УСЛУГА', name_work, p.text)
+        p.text = re.sub(r'ЧАСТЬ', defect, p.text)
+
+    document.save('top_komraz/act_end_downloads.docx')
+    filename = 'top_komraz/act_end_downloads.docx'
+    data = open(filename, "rb").read()
+    response = HttpResponse(data, content_type='application/docx')
+    response['Content-Length'] = os.path.getsize(filename)
+    response['Content-Disposition'] = 'attachment; filename=act_end_downloads.docx'
+
+    return response
+
+#Форма акта выполненных работ
+@csrf_exempt
+def download_act_end(request):
+    document = Document('top_komraz/act_end.docx')
+    document.save('top_komraz/act_end_downloads.docx')
+    filename = 'top_komraz/act_end_downloads.docx'
+    data = open(filename, "rb").read()
+    response = HttpResponse(data, content_type='application/docx')
+    response['Content-Length'] = os.path.getsize(filename)
+    response['Content-Disposition'] = 'attachment; filename=act_end_downloads.docx'
+
+    return response
 
 ##################################################
 ############### УЧЕТ  ############################

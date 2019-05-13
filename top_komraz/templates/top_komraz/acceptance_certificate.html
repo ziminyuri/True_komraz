@@ -1,13 +1,13 @@
 <!-- Акт приема -->
 
- {% extends "top_komraz/base.html" %}
+{% extends "top_komraz/base.html" %}
 
 {% block content %}
 
 
     <form action="{% url 'download_act'  %}">
         <input type="submit" class="btn btn-outline-secondary btn-sm" value="Скачать форму">
-      </form>
+    </form>
 
     <div><br></div>
 
@@ -32,14 +32,32 @@
             {% for order in orders %}
                 <tr>
                     <td>{{ order.ID_Order }}</td>
-                     <td>{{ order.Id_contract.ConclusionDate}}</td>
+                    <td>{{ order.Id_contract.ConclusionDate}}</td>
                     <td>{{ order.Id_contract.PeriodExecute}}</td>
                     <td>{{ order.Id_contract.Defect }}</td>
                     <td>{{ order.Id_contract.Appearance }}</td>
                     <td>{{ order.Id_contract.Id_device.Model_device }}</td>
                     <td>{{ order.Id_contract.Id_customer.FIO}}</td>
                     <td>{{ order.Id_contract.ID_service.Id_service.Name_work }}</td>
-                    <td><a class="btn btn-outline-secondary btn-sm" href="{% url 'show_appeals_update' id=order.ID_Order  %}">Скачать</a></td>
+                    <td>
+                        <form action="{% url 'download_act_enter'%}" method="POST">
+
+                            <input type="hidden" name="number_act" value="{{ order.Id_contract.Id_contract}}">
+                            <input type="hidden" name="fio" value="{{ order.Id_contract.Id_customer.FIO}}">
+                            <input type="hidden" name="address" value="{{ order.Id_contract.Id_customer.Adress}}">
+                            <input type="hidden" name="phone" value="{{ order.Id_contract.Id_customer.Phone}}">
+                            <input type="hidden" name="model" value="{{ order.Id_contract.Id_device.Model_device}}">
+                            <input type="hidden" name="imei" value="{{ order.Id_contract.Id_device.IMEI}}">
+                            <input type="hidden" name="appearance" value="{{ order.Id_contract.Appearance}}">
+                            <input type="hidden" name="name_work" value="{{ order.Id_contract.ID_service.Id_service.Name_work}}">
+                            <input type="hidden" name="defect" value="{{ order.Id_contract.Defect}}">
+                            <input type="hidden" name="employee" value="{{ order.Id_contract.Id_Employee.FIO}}">
+                            <input type="hidden" name="date" value="{{ order.Id_contract.ConclusionDate}}">
+
+                            <input type="submit" class="btn btn-outline-secondary btn-sm" value="Скачать">
+                        </form>
+                    </td>
+
                 </tr>
             {% endfor %}
             </tbody>

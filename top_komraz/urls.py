@@ -21,5 +21,9 @@ urlpatterns = [
     path('download_act_enter', views.download_act_enter, name='download_act_enter'),
     path('download_act', views.download_act, name='download_act'),
     path('contract_supply', views.show_contract_supply, name='show_contract_supply'),
+    path('download_supply', views.download_supply, name='download_supply'),
+    path('download_supply_form', views.download_supply_form, name='download_supply_form'),
     path('certificate_of_completion', views.show_certificate_of_completion, name='show_certificate_of_completion'),
+    path('download_act_end_template', views.download_act_end_template, name='download_act_end_template'),
+    path('download_act_end', views.download_act, name='download_act_end'),
 ]

@@ -1,29 +1,56 @@
 <!-- Акт выполненных работ -->
 
- {% extends "top_komraz/base.html" %}
+{% extends "top_komraz/base.html" %}
 
 {% block content %}
-<div class="table-responsive">
-            <table class="table table-striped table-sm">
-              <thead>
+    <form action="{% url 'download_act_end'  %}">
+        <input type="submit" class="btn btn-outline-secondary btn-sm" value="Скачать форму">
+    </form>
+
+    <div><br></div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>Номер акта</th>
+                <th>Мастер</th>
+                <th>Номер заказа</th>
+                <th>Устройство</th>
+                <th>Дефект</th>
+                <th>Клиент</th>
+                <th>Скачать</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for certificate in certificates %}
                 <tr>
-                  <th>Номер акта</th>
-                  <th>ФИО мастера</th>
-                    <th>Номер заказа</th>
-                    <th>Устройство</th>
+                    <td>{{ certificate.ID_certificate }}</td>
+                    <td>{{ certificate.ID_Order_fix.Id_Master.FIO }}</td>
+                    <td>{{ certificate.ID_Order_fix.ID_Order }}</td>
+                    <td>{{ certificate.ID_Order_fix.Id_contract.Id_device.Model_device}}</td>
+                    <td>{{ certificate.ID_Order_fix.Id_contract.Defect }}</td>
+                    <td>{{ certificate.ID_Order_fix.Id_contract.Id_customer.FIO }}</td>
+                    <td>
+                        <form action="{% url 'download_act_end_template'%}" method="POST">
+
+                            <input type="hidden" name="number_act" value="{{ certificate.ID_certificate}}">
+                            <input type="hidden" name="fio" value="{{ certificate.ID_Order_fix.Id_contract.Id_customer.FIO}}">
+                            <input type="hidden" name="address" value="{{ certificate.ID_Order_fix.Id_contract.Id_customer.Adress}}">
+                            <input type="hidden" name="phone" value="{{ certificate.ID_Order_fix.Id_contract.Id_customer.Phone}}">
+                            <input type="hidden" name="model" value="{{ certificate.ID_Order_fix.Id_contract.Id_device.Model_device}}">
+                            <input type="hidden" name="imei" value="{{ certificate.ID_Order_fix.Id_contract.Id_device.IMEI}}">
+                            <input type="hidden" name="name_work" value="{{ certificate.ID_Order_fix.Id_contract.ID_service.Id_service.Name_work}}">
+                            <input type="hidden" name="defect" value="{{ certificate.ID_Order_fix.Id_contract.ID_Detail_fix.NameDetail}} {{ certificate.ID_Order_fix.Id_contract.ID_Detail_fix.Id_KindDetail.Cifer_kind}} ">
+                            <input type="hidden" name="employee" value="{{ certificate.ID_Order_fix.Id_contract.Id_Employee.FIO}}">
+                            <input type="hidden" name="date" value="{{ certificate.Date }}">
+
+                            <input type="submit" class="btn btn-outline-secondary btn-sm" value="Скачать">
+                        </form>
+                    </td>
                 </tr>
-              </thead>
-              <tbody>
-              {% for completion in completions %}
-                <tr>
-                  <td>{{ completion.ID_certificate }}</td>
-                  <td>{{ completion.ID_Order.Id_Master.FIO }}</td>
-                 <td>{{ completion.ID_Order.ID_Order}}</td>
-                 <td>{{ completion.ID_Order.Id_contract.Id_device.Model_device}}</td>
-                <td>{{ completion.ID_Order.Id_contract. }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

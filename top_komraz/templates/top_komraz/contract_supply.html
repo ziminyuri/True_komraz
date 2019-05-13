@@ -1,7 +1,60 @@
 <!-- Договор на поставку -->
 
- {% extends "top_komraz/base.html" %}
+{% extends "top_komraz/base.html" %}
 
 {% block content %}
+
+<div class="btn-group">
+<button type="button" class="btn btn-success btn-sm">Создать</button>
+</div>
+    <div class="btn-group">
+    <form action="{% url 'download_supply_form'  %}">
+        <input type="submit" class="btn btn-outline-secondary btn-sm" value="Скачать форму">
+    </form>
+    </div>
+
+    <div><br></div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>Номер договора</th>
+                <th>Дата</th>
+                <th>Поставщик</th>
+                <th>Деталь</th>
+                <th>Кол-во</th>
+                <th>Скачать</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for delivery in deliverys %}
+                <tr>
+                    <td>{{ delivery.ID_request }}</td>
+                    <td>{{ delivery.Date}}</td>
+                    <td>{{ delivery.ID_Provider.Organization_name }}</td>
+                    <td>{{ delivery.ID_Detail.NameDetail}}</td>
+                    <td>{{ delivery.Quantity }}</td>
+                    <td>
+                        <form action="{% url 'download_supply' %}" method="POST">
+
+                            <input type="hidden" name="number_act" value="{{ delivery.ID_request}}">
+                            <input type="hidden" name="date" value="{{ delivery.Date}}">
+                            <input type="hidden" name="provider" value="{{ delivery.ID_Provider.Organization_name}}">
+                            <input type="hidden" name="detail" value="{{ delivery.ID_Detail.NameDetail}}">
+                            <input type="hidden" name="quantity" value="{{ delivery.Quantity}}">
+                            <input type="hidden" name="price" value="{{ delivery.ID_Detail.PriceDetail}}">
+                            <input type="hidden" name="address" value="{{ delivery.ID_Provider.Organisation_Adress}}">
+                            <input type="hidden" name="phone" value="{{ delivery.ID_Provider.Organisation_phone}}">
+                            <input type="hidden" name="employee" value="{{ delivery.ID_Provider.Employee}}">
+
+                            <input type="submit" class="btn btn-outline-secondary btn-sm" value="Скачать">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 {% endblock %}

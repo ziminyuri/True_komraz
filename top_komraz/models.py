@@ -118,14 +118,15 @@ class Detail_fix2 (models.Model):
         db_table = 'detail_fix2'
 
 #Договор на поставку
-class Request_delivery2(models.Model):
+class Request_delivery3(models.Model):
     ID_request = models.AutoField(primary_key=True)
     Date = models.DateField()
+    Quantity = models.IntegerField()
     ID_Provider = models.ForeignKey(Provider, models.DO_NOTHING)
     ID_Detail = models.ForeignKey(Detail_fix2, models.DO_NOTHING)
 
     class Meta:
-        db_table = 'request_delivery2'
+        db_table = 'request_delivery3'
 
 
 #Клиент
@@ -176,3 +177,12 @@ class Certificate_fix2(models.Model):
 
     class Meta:
         db_table = 'certificate_fix2'
+
+#Реализованные запчасти
+class Implemented(models.Model):
+    ID_certificate= models.AutoField(primary_key=True)
+    Date = models.DateField()
+    ID_Order_fix = models.ForeignKey(Orderentity_fix2, models.DO_NOTHING)
+
+    class Meta:
+        db_table = 'implemented'
