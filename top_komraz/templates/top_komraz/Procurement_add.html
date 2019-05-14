@@ -2,14 +2,14 @@
 
 {% block content %}
     <row>
-        <form action="{% url 'show_parts_sold'  %}" method="POST">
+        <form action="{% url 'show_procurement'  %}" method="POST">
             <div class="form-group">
                 <input type="hidden" required class="form-control" name="_method" id="_method" value = "POST">
                 <label>Наименование</label>
                 <select id="RequestType" class="form-control" name="id_detail" id="id_detail">
                     {% for detail in details %}
-                        <option selected value= "{{ detail.ID_Detail.Id_Detail }}">
-                            {{ detail.ID_Detail.NameDetail }}
+                        <option selected value= "{{ detail.Id_Detail }}">
+                            {{ detail.NameDetail }}
                         </option>
                     {% endfor %}
                 </select>

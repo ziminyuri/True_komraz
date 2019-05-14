@@ -4,4 +4,35 @@
 
 {% block content %}
 
+        <a class="btn btn-outline-secondary btn-sm" href="{% url 'show_procurement_add'  %}">Добавить</a>
+    <div><br></div>
+
+<div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>Деталь</th>
+                <th>Необходимое количество</th>
+                <th>Удалить</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for plan in plans %}
+                <tr>
+                    <td>{{ plan.ID_Detail.NameDetail }}</td>
+                    <td>{{ plan.Quantity }}</td>
+                    <td>
+                        <form action="{% url 'show_procurement' %}" method="POST">
+                            <input type="hidden" required class="form-control" name="_method" id="_method" value = "DELETE">
+                            <input type="hidden" required class="form-control" name="device" id="device" value = "{{ plan.id_plan_delivery }}">
+                            <input type="submit" class="btn btn-outline-danger btn-sm" value="Удалить" >
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 {% endblock %}

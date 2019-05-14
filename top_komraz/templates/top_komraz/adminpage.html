@@ -10,6 +10,10 @@
           <div class="card-body">
             <img src="{% static 'top_komraz/images/1.png' %}"  width="150px"><br><br>
               <a class="btn btn-lg btn-block btn-secondary" href="{% url 'show_certificate_of_completion'  %}">Акты выполненых работ</a>
+              <br>
+              <a class="btn btn-lg btn-block btn-secondary" href="{% url 'show_acceptance_certificate'  %}">Акты приема</a>
+              <br>
+              <a class="btn btn-lg btn-block btn-secondary" href="{% url 'show_contract_supply'  %}">Договор на поставку</a>
           </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -22,9 +26,22 @@
             <br>
               <a class="btn btn-lg btn-block btn-outline-secondary" href="{% url 'show_parts_stock'  %}">Запчасти в наличии</a>
             <br>
+              <a class="btn btn-lg btn-block btn-outline-secondary" href="{% url 'show_parts_sold'  %}">Запчасти реализованные</a>
+          </div>
+
+        </div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal">Планы</h4>
+          </div>
+          <div class="card-body">
+<img src="{% static 'top_komraz/images/3.png' %}" width="150px">
+              <br><br>
+              <a class="btn btn-lg btn-block btn-secondary" href="{% url 'show_procurement'  %}">Закупки</a>
+
+
           </div>
         </div>
-
       </div>
 
 {% endblock %}

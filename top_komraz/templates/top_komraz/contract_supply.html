@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="btn-group">
-<button type="button" class="btn btn-success btn-sm">Создать</button>
+<a class="btn btn-success btn-sm" href="{% url 'show_contract_supply_add'  %}">Создать</a>
 </div>
     <div class="btn-group">
     <form action="{% url 'download_supply_form'  %}">

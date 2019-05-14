@@ -15,11 +15,22 @@
 
   <body>
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+
+        {% if sales != '0' %}
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'index'  %}">Cервисный центр</a>
+        {% endif %}
+
+    {% if master != '0' %}
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'master'  %}">Cервисный центр</a>
+        {% endif %}
+
+    {% if admin != '0' %}
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'adminpage'  %}">Cервисный центр</a>
+        {% endif %}
 
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#">Выход</a>
+          <a class="nav-link" href="{% url 'login'  %}">Выход</a>
         </li>
       </ul>
     </nav>
@@ -45,7 +56,11 @@
                             <div class="link"><i class="fa fa-code"></i>Документы<i class="fa fa-chevron-down"></i></div>
                             <ul class="submenu">
                                 <li><a href="{% url 'show_acceptance_certificate'  %}">Акт приема</a></li>
+                                {% if admin != '0'%}
                                 <li><a href="{% url 'show_contract_supply'  %}">Договор на поставку</a></li>
+                                {% endif %}
+
+
                                 <li><a href="{% url 'show_certificate_of_completion'  %}">Акт выполненных работ</a></li>
                             </ul>
                         </li>
@@ -54,15 +69,24 @@
                             <ul class="submenu">
                                 <li><a href="{% url 'show_appeals'  %}">Обращения</a></li>
                                 <li><a href="{% url 'show_parts_stock'  %}">Запчасти в наличие</a></li>
+                                {% if master == '0' %}
                                 <li><a href="{% url 'show_parts_sold'  %}">Запчасти реализованные</a></li>
+
                                  <li><a href="{% url 'show_payments'  %}">Платежи</a></li>
+                                {% endif %}
                             </ul>
                         </li>
                         <li>
                             <div class="link"><i class="fa fa-globe"></i>Планы<i class="fa fa-chevron-down"></i></div>
                             <ul class="submenu">
-                                <li><a href="{% url 'show_sales'  %}">Продаж</a></li>
+
+                                {% if master != '0' %}
                                 <li><a href="{% url 'show_procurement'  %}">Закупок</a></li>
+                                {% endif %}
+
+                            {% if admin != '0' %}
+                                <li><a href="{% url 'show_procurement'  %}">Закупок</a></li>
+                                {% endif %}
                             </ul>
                         </li>
                     </ul>

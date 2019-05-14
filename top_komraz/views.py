@@ -5,11 +5,80 @@ from docx import Document
 from django.http import HttpResponse
 import os
 import re
-from decimal import Decimal
+import hashlib
+
+#Костыльная форма авторизации
+#Так делать не нужно!
+
+# Функция получения хеша
+def get_hash(password):
+    hash = hashlib.sha256()
+    hash.update(password.encode('utf-8'))
+    password_hash = hash.hexdigest()
+    return password_hash
+
+# Session of users
+user_master = "0"
+user_sales = "0"
+user_admin = "0"
+
+def login(request):
+    return render(request, 'top_komraz/login.html')
+
 
 # Create your views here.
+@csrf_exempt
+def login(request):
+    el = " "  # Ошибки на форму
+    global user_admin
+    global user_master
+    global user_sales
+    user_admin = "0"
+    user_master = "0"
+    user_sales = "0"
+
+    if request.method == 'POST':
+        print("Зашли")
+        re_data = request.POST
+        try:
+            username = re_data['username']
+            passw = re_data['pas']
+            password=get_hash(passw)
+            temp = get_object_or_404(Login1, login=username,password = password)
+
+            #Мастер
+            if temp.Id_Master != None:
+                user_master = temp.Id_Master
+                return redirect('master')
+
+            #Cотрудник отдела по работе с обращениями
+            if temp.Id_Employee != None:
+                user_sales = temp.Id_Employee
+                return redirect('index')
+
+            # Администратор
+            if (temp.Id_Employee ==None) and (temp.Id_Master ==None):
+                    user_admin = '1'
+                    return redirect('adminpage')
+
+        except Exception as e:
+            print("Поподаем в exception")
+            print(e)
+            el = "Неверная пара логин/пароль. Повторите попытку."
+
+    return render(request, 'top_komraz/login.html',{'e': el})
+
 def index(request):
-    return render(request, 'top_komraz/main.html')
+    print(user_admin)
+    print(user_sales)
+    print(user_master)
+    return render(request, 'top_komraz/main.html',{'master': user_master, 'sales':user_sales, 'admin':user_admin})
+
+def master(request):
+    return render(request, 'top_komraz/master.html',{'master': user_master, 'sales':user_sales, 'admin':user_admin})
+
+def adminpage(request):
+    return render(request, 'top_komraz/adminpage.html',{'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 ##################################################
 ############### СПРАВОЧНИКИ #####################
@@ -18,22 +87,22 @@ def index(request):
 #Услуги
 def show_kind_services(request):
     services = KindService.objects.all()
-    return render(request, 'top_komraz/kind_services.html',{'services': services})
+    return render(request, 'top_komraz/kind_services.html',{'services': services,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Запчасти
 def show_kind_detail(request):
     detail = KindDetail.objects.all()
-    return render(request, 'top_komraz/kind_detail.html',{'details': detail})
+    return render(request, 'top_komraz/kind_detail.html',{'details': detail,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Устройства
 def show_kind_device(request):
     device = KindDevice.objects.all()
-    return render(request, 'top_komraz/kind_device.html',{'devices': device})
+    return render(request, 'top_komraz/kind_device.html',{'devices': device,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Производители
 def show_kind_creator(request):
     creator = Creator.objects.all()
-    return render(request, 'top_komraz/creator.html',{'creators': creator})
+    return render(request, 'top_komraz/creator.html',{'creators': creator,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 ##################################################
 ############### Документы ########################
@@ -42,7 +111,7 @@ def show_kind_creator(request):
 #Акт приема
 def show_acceptance_certificate(request):
     orders = Orderentity_fix2.objects.all()
-    return render(request, 'top_komraz/acceptance_certificate.html',{'orders': orders})
+    return render(request, 'top_komraz/acceptance_certificate.html',{'orders': orders,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Заполненный акт приема
 @csrf_exempt
@@ -97,10 +166,26 @@ def download_act(request):
     return response
 
 #Договор на поставку
+@csrf_exempt
 def show_contract_supply(request):
     deliverys = Request_delivery3.objects.all()
-    return render(request, 'top_komraz/contract_supply.html',{'deliverys': deliverys})
+    if request.method == 'POST':
+        re_data = request.POST
 
+    # Добавление
+        if re_data['_method'] == "POST":
+            detail = get_object_or_404(Detail_fix2, Id_Detail=re_data['id_detail'])
+            provider = get_object_or_404(Provider, ID_Provider=re_data['id_provider'])
+            Request_delivery3.objects.create(ID_Detail=detail, Quantity=re_data['id_quantity'],Date=re_data['id_date'],ID_Provider = provider )
+            return redirect('show_contract_supply')
+
+    return render(request, 'top_komraz/contract_supply.html',{'deliverys': deliverys,'master': user_master, 'sales':user_sales, 'admin':user_admin})
+
+#Договор на поставку: Добавление
+def show_contract_supply_add(request):
+    provider = Provider.objects.all()
+    detail = Detail_fix2.objects.all()
+    return render(request, 'top_komraz/contract_supply_add.html',{'providers': provider, 'details': detail,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Заполненный договор на поставку
 @csrf_exempt
@@ -158,7 +243,7 @@ def download_supply_form(request):
 #Акт выполненных работ
 def show_certificate_of_completion(request):
     certificate = Certificate_fix2.objects.all()
-    return render(request, 'top_komraz/certificate_of_completion.html',{'certificates': certificate})
+    return render(request, 'top_komraz/certificate_of_completion.html',{'certificates': certificate,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Заполненный акт выполненных работ
 @csrf_exempt
@@ -298,7 +383,7 @@ def show_appeals(request):
 
 
 
-    return render(request, 'top_komraz/appeals.html',{'orders': orders})
+    return render(request, 'top_komraz/appeals.html',{'orders': orders,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Обращения: Добавиление
 def show_appeals_add(request):
@@ -314,7 +399,7 @@ def show_appeals_add(request):
     details = Detail_fix2.objects.all()
     return render(request, 'top_komraz/appeals_add.html',{'orders': orders, 'statuss': statuss, 'masters': masters, 'contracts': contracts, 'devices': devices,
                                                       'creators': creators, 'kinddevices': kinddevices, 'services': services, 'customres': customres,
-                                                      'details': details})
+                                                      'details': details,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Обращения: Редактирование
 def show_appeals_update(request,id):
@@ -330,7 +415,7 @@ def show_appeals_update(request,id):
     details = Detail_fix2.objects.all()
     return render(request, 'top_komraz/appeals_update.html',{'orders': orders, 'statuss': statuss, 'masters': masters, 'contracts': contracts, 'devices': devices,
                                                       'creators': creators, 'kinddevices': kinddevices, 'services': services, 'customres': customres,
-                                                      'details': details})
+                                                      'details': details,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Запчасти в наличии
 @csrf_exempt
@@ -352,18 +437,18 @@ def show_parts_stock(request):
             Detail_fix2.objects.filter(Id_Detail =re_data['detail']).update(Number=re_data['id_number'])
             return redirect('show_parts_stock')
 
-    return render(request, 'top_komraz/parts_stock.html',{'details': details})
+    return render(request, 'top_komraz/parts_stock.html',{'details': details,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Запчасти в наличии: Добавиление
 def show_parts_stock_add(request):
     details = Detail_fix2.objects.all()
     kind = KindDetail.objects.all()
-    return render(request, 'top_komraz/parts_stock_add.html',{ 'details': details, 'kinds' : kind})
+    return render(request, 'top_komraz/parts_stock_add.html',{ 'details': details, 'kinds' : kind,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Запчасти в наличии: Редактирование количества
 def show_parts_stock_update(request,id):
     detail = get_object_or_404(Detail_fix2,  Id_Detail =id)
-    return render(request, 'top_komraz/parts_stock_update.html',{'detail': detail})
+    return render(request, 'top_komraz/parts_stock_update.html',{'detail': detail,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 
 #Запчасти реализованные
@@ -390,17 +475,17 @@ def show_parts_sold(request):
             data.delete()
 
             return redirect('show_parts_sold')
-    return render(request, 'top_komraz/parts_sold.html',{'details': details})
+    return render(request, 'top_komraz/parts_sold.html',{'details': details,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Запчасти реализованные: Добавиление
 def show_parts_sold_add(request):
     details = Implemented.objects.all()
-    return render(request, 'top_komraz/parts_sold_add.html',{ 'details': details})
+    return render(request, 'top_komraz/parts_sold_add.html',{ 'details': details,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Запчасти реализованные: Редактирование количества
 def show_parts_sold_update(request,id):
     detail = get_object_or_404(Implemented,  ID_certificate =id)
-    return render(request, 'top_komraz/parts_sold_update.html',{'detail': detail})
+    return render(request, 'top_komraz/parts_sold_update.html',{'detail': detail,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 #Платежи
 @csrf_exempt
@@ -416,18 +501,38 @@ def show_payments(request):
             Orderentity_fix2.objects.filter(ID_Order=re_data['order']).update(Id_Status=status)
             return redirect('show_payments')
 
-    return render(request, 'top_komraz/Payments.html',{'orders': orders})
+
+
+    return render(request, 'top_komraz/Payments.html',{'orders': orders,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 ##################################################
 ############### ПЛАНЫ ############################
 #################################################
 
-#Продажи
-def show_sales(request):
-    return render(request, 'top_komraz/Sales.html')
-
 #Закупок
+@csrf_exempt
 def show_procurement(request):
-    return render(request, 'top_komraz/Procurement.html')
+    plan = Plan.objects.all()
+    if request.method == 'POST':
+        re_data = request.POST
+
+    # Добавление
+        if re_data['_method'] == "POST":
+            detail = get_object_or_404(Detail_fix2, Id_Detail=re_data['id_detail'])
+            Plan.objects.create(ID_Detail=detail, Quantity=re_data['id_quantity'])
+            return redirect('show_procurement')
+
+            # Удаление
+        if re_data['_method'] == "DELETE":
+            data = Plan.objects.get(id_plan_delivery=re_data['device'])
+            data.delete()
+            return redirect('show_procurement')
+
+    return render(request, 'top_komraz/Procurement.html',{'plans': plan,'master': user_master, 'sales':user_sales, 'admin':user_admin})
+
+#Закупки: Добавление
+def show_procurement_add(request):
+    details = Detail_fix2.objects.all()
+    return render(request, 'top_komraz/Procurement_add.html',{'details': details,'master': user_master, 'sales':user_sales, 'admin':user_admin})
 
 

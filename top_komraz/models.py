@@ -205,11 +205,23 @@ class Period(models.Model):
         db_table = 'period'
 
 #План продаж
-class Procurement_plan(models.Model):
+class Procurement_plan1(models.Model):
     id_plan= models.AutoField(primary_key=True)
+    Date = models.DateField()
     Quantity = models.IntegerField()
     Id_Employee = models.ForeignKey(Employee, models.DO_NOTHING)
     id_period = models.ForeignKey(Period, models.DO_NOTHING)
 
     class Meta:
-        db_table = 'procurement_plan'
+        db_table = 'procurement_plan1'
+
+#Логин
+class Login1(models.Model):
+    id_login= models.AutoField(primary_key=True)
+    login = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)
+    Id_Master = models.ForeignKey(Master, models.DO_NOTHING,null=True,)
+    Id_Employee = models.ForeignKey(Employee, models.DO_NOTHING,null=True,)
+
+    class Meta:
+        db_table = 'login1'
